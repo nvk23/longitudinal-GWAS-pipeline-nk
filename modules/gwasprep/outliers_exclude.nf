@@ -4,7 +4,7 @@ process GETPHENOS {
   label 'small'
   
   input:
-    path covarfile, stageAs: 'covariates.tsv' //from "${params.covarfile}"
+    path "${params.covarfile}" //from "${params.covarfile}"
   output:
     path "phenos_list.txt", emit: allphenos//into p3_get_cohorts_processed
   
@@ -16,7 +16,7 @@ process GETPHENOS {
     
     study_id_colname = "${params.study_col}"
 
-    data_df = pd.read_csv('covariates.tsv', sep="\\t", engine='c')
+    data_df = pd.read_csv("${params.covarfile}", sep="\\t", engine='c')
     cohorts = data_df[study_id_colname].unique().tolist()
     
     with open("phenos_list.txt", 'w') as f:
@@ -34,7 +34,7 @@ process REMOVEOUTLIERS {
 
   input:
     path samplelist //from p2_qc_processed
-    path covarfile, stageAs: 'covariates.tsv' //from "${params.covarfile}"
+    path "${params.covarfile}" //from "${params.covarfile}"
     each cohort //from p3_in_cohort_list 
   output:
     path "${params.ancestry}_${cohort}_filtered.tsv" //into gwas_samplelist
@@ -52,7 +52,7 @@ process REMOVEOUTLIERS {
     ancestry_df = pd.read_hdf("${samplelist}", key="ancestry_keep")
     outlier_df = pd.read_hdf("${samplelist}", key="outliers")
     kin_df = pd.read_hdf("${samplelist}", key="kin")
-    data_df = pd.read_csv('covariates.tsv', sep="\\t", engine='c')
+    data_df = pd.read_csv("${params.study_col}", sep="\\t", engine='c')
 
     cohorts = data_df[study_id_colname].unique().tolist()
     cohorts = filter(lambda x: x == "${cohort}", cohorts)
