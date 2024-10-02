@@ -52,7 +52,7 @@ process REMOVEOUTLIERS {
     ancestry_df = pd.read_hdf("${samplelist}", key="ancestry_keep")
     outlier_df = pd.read_hdf("${samplelist}", key="outliers")
     kin_df = pd.read_hdf("${samplelist}", key="kin")
-    data_df = pd.read_csv("${params.study_col}", sep="\\t", engine='c')
+    data_df = pd.read_csv("${params.covarfile}", sep="\\t", engine='c')
 
     cohorts = data_df[study_id_colname].unique().tolist()
     cohorts = filter(lambda x: x == "${cohort}", cohorts)
